@@ -121,70 +121,74 @@ uint8_t g_UsbDeviceDescriptor[] = {
 
 USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
 uint8_t g_UsbDeviceHidMouseReportDescriptor[] = {
-    0x05U, 0x01U, /* Usage Page (Generic Desktop)*/
-    0x09U, 0x02U, /* Usage (Mouse) */
-    0xA1U, 0x01U, /* Collection (Application) */
-    0x09U, 0x01U, /* Usage (Pointer) */
+	0x05U, 0x01U, /* Usage Page (Generic Desktop)*/
+	0x09U, 0x02U, /* Usage (Mouse) */
+	0xA1U, 0x01U, /* Collection (Application) */
+	0x85U, 0x01U, /* Report ID */
+	0x09U, 0x01U, /* Usage (Pointer) */
 
-    0xA1U, 0x00U, /* Collection (Physical) */
-    0x05U, 0x09U, /* Usage Page (Buttons) */
-    0x19U, 0x01U, /* Usage Minimum (01U) */
-    0x29U, 0x03U, /* Usage Maximum (03U) */
+	0xA1U, 0x00U, /* Collection (Physical) */
+	0x05U, 0x09U, /* Usage Page (Buttons) */
+	0x19U, 0x01U, /* Usage Minimum (01U) */
+	0x29U, 0x03U, /* Usage Maximum (03U) */
 
-    0x15U, 0x00U, /* Logical Minimum (0U) */
-    0x25U, 0x01U, /* Logical Maximum (1U) */
-    0x95U, 0x03U, /* Report Count (3U) */
-    0x75U, 0x01U, /* Report Size (1U) */
+	0x15U, 0x00U, /* Logical Minimum (0U) */
+	0x25U, 0x01U, /* Logical Maximum (1U) */
+	0x95U, 0x03U, /* Report Count (3U) */
+	0x75U, 0x01U, /* Report Size (1U) */
 
-    0x81U, 0x02U, /* Input(Data, Variable, Absolute) 3U button bit fields */
-    0x95U, 0x01U, /* Report Count (1U) */
-    0x75U, 0x05U, /* Report Size (5U) */
-    0x81U, 0x01U, /* Input (Constant), 5U constant field */
+	0x81U, 0x02U, /* Input(Data, Variable, Absolute) 3U button bit fields */
+	0x95U, 0x01U, /* Report Count (1U) */
+	0x75U, 0x05U, /* Report Size (5U) */
+	0x81U, 0x01U, /* Input (Constant), 5U constant field */
 
-    0x05U, 0x01U, /* Usage Page (Generic Desktop) */
-    0x09U, 0x30U, /* Usage (X) */
-    0x09U, 0x31U, /* Usage (Y) */
-    0x09U, 0x38U, /* Usage (Z) */
+	0x05U, 0x01U, /* Usage Page (Generic Desktop) */
+	0x09U, 0x30U, /* Usage (X) */
+	0x09U, 0x31U, /* Usage (Y) */
+	0x09U, 0x38U, /* Usage (Z) */
 
-    0x15U, 0x81U, /* Logical Minimum (-127) */
-    0x25U, 0x7FU, /* Logical Maximum (127) */
-    0x75U, 0x08U, /* Report Size (8U) */
-    0x95U, 0x03U, /* Report Count (3U) */
-    0x81U, 0x06U, /* Input(Data, Variable, Relative), Three position bytes (X & Y & Z)*/
-	//KEYBOARD
-	0x05U, 0x01U,        // Usage Page (Generic Desktop Ctrls)
-	0x09U, 0x06U,        // Usage (Keyboard)
-	0xA1U, 0x01U,        // Collection (Application)
-	0x05U, 0x07U,        //   Usage Page (Kbrd/Keypad)
-	0x19U, 0xE0U,        //   Usage Minimum (0xE0)
-	0x29U, 0xE7U,        //   Usage Maximum (0xE7)
-	0x15U, 0x00U,        //   Logical Minimum (0)
-	0x25U, 0x01U,        //   Logical Maximum (1)
-	0x75U, 0x01U,        //   Report Size (1)
-	0x95U, 0x08U,        //   Report Count (8)
-	0x81U, 0x02U,        //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-	0x95U, 0x01U,        //   Report Count (1)
-	0x75U, 0x08U,        //   Report Size (8)
-	0x81U, 0x01U,        //   Input (Const,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
-	0x95U, 0x03U,        //   Report Count (3)
-	0x75U, 0x01U,        //   Report Size (1)
-	0x05U, 0x08U,        //   Usage Page (LEDs)
-	0x19U, 0x01U,        //   Usage Minimum (Num Lock)
-	0x29U, 0x03U,        //   Usage Maximum (Scroll Lock)
-	0x91U, 0x02U,        //   Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-	0x95U, 0x05U,        //   Report Count (5)
-	0x75U, 0x01U,        //   Report Size (1)
-	0x91U, 0x01U,        //   Output (Const,Array,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-	0x95U, 0x06U,        //   Report Count (6)
-	0x75U, 0x08U,        //   Report Size (8)
-	0x15U, 0x00U,        //   Logical Minimum (0)
-	0x26U, 0xFFU, 0x00U,  //   Logical Maximum (255)
-	0x05U, 0x07U,        //   Usage Page (Kbrd/Keypad)
-	0x19U, 0x00U,        //   Usage Minimum (0x00)
-	0x2AU, 0xFFU, 0x00U,  //   Usage Maximum (0xFF)
-	0x81U, 0x00U,        //   Input (Data,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0xC0U         // End Collection
+	0x15U, 0x81U, /* Logical Minimum (-127) */
+	0x25U, 0x7FU, /* Logical Maximum (127) */
+	0x75U, 0x08U, /* Report Size (8U) */
+	0x95U, 0x03U, /* Report Count (3U) */
 
+	0x81U, 0x06U, /* Input(Data, Variable, Relative), Three position bytes (X & Y & Z)*/
+	0xC0U,        /* End collection, Close Pointer collection*/
+	0xC0U,         /* End collection, Close Mouse collection */
+	/***********KEYBOARD*****************/
+	0x05, 0x01,        // Usage Page (Generic Desktop Ctrls)
+	0x09, 0x06,        // Usage (Keyboard)
+	0xA1, 0x01,        // Collection (Application)
+	0x85U, 0x02U, 	   /* Report ID */
+	0x05, 0x07,        //   Usage Page (Kbrd/Keypad)
+	0x19, 0xE0,        //   Usage Minimum (0xE0)
+	0x29, 0xE7,        //   Usage Maximum (0xE7)
+	0x15, 0x00,        //   Logical Minimum (0)
+	0x25, 0x01,        //   Logical Maximum (1)
+	0x75, 0x01,        //   Report Size (1)
+	0x95, 0x08,        //   Report Count (8)
+	0x81, 0x02,        //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+	0x95, 0x01,        //   Report Count (1)
+	0x75, 0x08,        //   Report Size (8)
+	0x81, 0x01,        //   Input (Const,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
+	0x95, 0x03,        //   Report Count (3)
+	0x75, 0x01,        //   Report Size (1)
+	0x05, 0x08,        //   Usage Page (LEDs)
+	0x19, 0x01,        //   Usage Minimum (Num Lock)
+	0x29, 0x03,        //   Usage Maximum (Scroll Lock)
+	0x91, 0x02,        //   Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
+	0x95, 0x05,        //   Report Count (5)
+	0x75, 0x01,        //   Report Size (1)
+	0x91, 0x01,        //   Output (Const,Array,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
+	0x95, 0x06,        //   Report Count (6)
+	0x75, 0x08,        //   Report Size (8)
+	0x15, 0x00,        //   Logical Minimum (0)
+	0x26, 0xFF, 0x00,  //   Logical Maximum (255)
+	0x05, 0x07,        //   Usage Page (Kbrd/Keypad)
+	0x19, 0x00,        //   Usage Minimum (0x00)
+	0x2A, 0xFF, 0x00,  //   Usage Maximum (0xFF)
+	0x81, 0x00,        //   Input (Data,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
+	0xC0,              // End Collection
 };
 
 

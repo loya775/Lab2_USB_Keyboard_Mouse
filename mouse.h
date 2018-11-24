@@ -62,7 +62,8 @@
 #define USB_DEVICE_INTERRUPT_PRIORITY (3U)
 #endif
 
-#define USB_HID_MOUSE_REPORT_LENGTH (0x04U)
+#define USB_HID_MOUSE_REPORT_LENGTH (0x05U)
+#define USB_HID_KEYBOARD_REPORT_LENGTH (0x09U)
 typedef struct _usb_hid_mouse_struct
 {
     usb_device_handle deviceHandle;
