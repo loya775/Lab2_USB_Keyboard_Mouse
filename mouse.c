@@ -61,7 +61,101 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
+#define STATE_SIZE 42
 
+#define KEY_A 0x04U
+#define KEY_B 0x05U
+#define KEY_C 0x06U
+#define KEY_D 0x07U
+#define KEY_E 0x08U
+#define KEY_F 0x09U
+#define KEY_G 0x0AU
+#define KEY_H 0x0BU
+#define KEY_I 0x0CU
+#define KEY_J 0x0DU
+#define KEY_K 0x0EU
+#define KEY_L 0x0FU
+#define KEY_M 0x10U
+#define KEY_N 0x11U
+#define KEY_O 0x12U
+#define KEY_P 0x13U
+#define KEY_Q 0x14U
+#define KEY_R 0x15U
+#define KEY_S 0x16U
+#define KEY_T 0x17U
+#define KEY_U 0x18U
+#define KEY_V 0x19U
+#define KEY_W 0x1AU
+#define KEY_X 0x1BU
+#define KEY_Y 0x1CU
+#define KEY_Z 0x1DU
+#define KEY_ENTER 0x28U
+#define KEY_SPACE 0x2CU
+#define KEY_START 0x08U
+#define KEY_RIGHTARROW 0x4FU
+#define KEY_LEFTARROW 0x50U
+#define KEY_DOWNARROW 0x51U
+#define KEY_UPARROW 0x52U
+#define KEY_CTRL 0x01U
+#define KEY_DELAY 50
+#define ENTER_DELAY 250
+#define WIN_DELAY 200
+#define MOUSE_DELAY 150
+
+typedef struct _fsm
+{
+	uint8_t device;
+	uint8_t data1;
+	uint8_t data2;
+	uint8_t data3;
+	uint8_t time;
+}fsm_t;
+
+fsm_t fsm[STATE_SIZE] =
+{
+	{2,KEY_START,0,0,KEY_DELAY},
+	{2,0,0,KEY_P,KEY_DELAY},
+	{2,0,0,KEY_I,KEY_DELAY},
+	{2,0,0,KEY_N,KEY_DELAY},
+	{2,0,0,KEY_T,KEY_DELAY},
+	{2,0,0,KEY_A,KEY_DELAY},
+	{2,0,0,KEY_ENTER,ENTER_DELAY},
+	{1,0,0,2,MOUSE_DELAY},
+	{1,1,-2,0,MOUSE_DELAY},
+	{1,1,0,2,MOUSE_DELAY},
+	{1,1,2,0,MOUSE_DELAY},
+	{1,1,0,-2,MOUSE_DELAY},
+	{1,0,0,0,1},
+	{2,8,0,0,MOUSE_DELAY},
+	{2,0,0,KEY_G,KEY_DELAY},
+	{2,0,0,KEY_E,KEY_DELAY},
+	{2,0,0,KEY_D,KEY_DELAY},
+	{2,0,0,KEY_I,KEY_DELAY},
+	{2,0,0,KEY_T,KEY_DELAY},
+	{2,0,0,KEY_ENTER,ENTER_DELAY},
+	{2,KEY_START + KEY_CTRL,0,KEY_LEFTARROW,150},
+	{2,KEY_CTRL,0,KEY_N,ENTER_DELAY},
+	{1,0,-2,0,MOUSE_DELAY},
+	{1,1,0,0,1},
+	{1,0,0,0,1},
+	{2,0,0,KEY_H,KEY_DELAY},
+	{2,0,0,KEY_O,KEY_DELAY},
+	{2,0,0,KEY_L,KEY_DELAY},
+	{2,0,0,KEY_A,KEY_DELAY},
+	{2,0,0,KEY_SPACE,KEY_DELAY},
+	{2,0,0,KEY_M,KEY_DELAY},
+	{2,0,0,KEY_U,KEY_DELAY},
+	{2,0,0,KEY_N,KEY_DELAY},
+	{2,0,0,KEY_D,KEY_DELAY},
+	{2,0,0,KEY_O,KEY_DELAY},
+	{2,KEY_CTRL,0,KEY_A,KEY_DELAY},
+	{2,KEY_CTRL,0,KEY_C,KEY_DELAY},
+	{1,0,2,0,MOUSE_DELAY},
+	{1,1,0,0,1},
+	{1,0,0,0,1},
+	{2,KEY_CTRL,0,KEY_V,KEY_DELAY},
+	{2,0,0,0,KEY_DELAY}
+};
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -160,126 +254,62 @@ void USB_DeviceTaskFn(void *deviceHandle)
 }
 #endif
 
-static uint8_t currentId = 1, count = 0;
+static uint8_t count = 0, currentState = 0;
 
 /* Update mouse pointer location. Draw a rectangular rotation*/
 static usb_status_t USB_DeviceHidMouseAction(void)
 {
 	uint8_t length;
 
-	if(currentId == 1)
+	count++;
+	if(count == fsm[currentState].time)
+	{
+		count = 0;
+
+		if(fsm[currentState].device == 1)
+		{
+			g_UsbDeviceHidMouse.buffer = s_MouseBuffer;
+			length = USB_HID_MOUSE_REPORT_LENGTH;
+		}
+		else
+		{
+			g_UsbDeviceHidMouse.buffer = s_KeyboardBuffer;
+			length = USB_HID_KEYBOARD_REPORT_LENGTH;
+		}
+
+		g_UsbDeviceHidMouse.buffer[0] = fsm[currentState].device;
+		g_UsbDeviceHidMouse.buffer[1] = fsm[currentState].data1;
+		g_UsbDeviceHidMouse.buffer[2] = fsm[currentState].data2;
+		g_UsbDeviceHidMouse.buffer[3] = fsm[currentState].data3;
+
+		currentState++;
+
+		if(currentState > STATE_SIZE)
+			currentState = STATE_SIZE;
+	}
+
+	else if(fsm[currentState].device == 1)
 	{
 		g_UsbDeviceHidMouse.buffer = s_MouseBuffer;
 		length = USB_HID_MOUSE_REPORT_LENGTH;
-
-		count++;
-		if(count == 201)
-		{
-			currentId = 2;
-			count = 0;
-		}
-		static int8_t x = 0U;
-		static int8_t y = 0U;
-		enum
-		{
-			RIGHT,
-			DOWN,
-			LEFT,
-			UP
-		};
-		static uint8_t dir = RIGHT;
-		g_UsbDeviceHidMouse.buffer[0] = 1;
-
-		switch (dir)
-		{
-			case RIGHT:
-				/* Move right. Increase X value. */
-				g_UsbDeviceHidMouse.buffer[2] = 2U;
-				g_UsbDeviceHidMouse.buffer[3] = 0U;
-				x++;
-				if (x > 99U)
-				{
-					dir++;
-				}
-				break;
-			case DOWN:
-				/* Move down. Increase Y value. */
-				g_UsbDeviceHidMouse.buffer[2] = 0U;
-				g_UsbDeviceHidMouse.buffer[3] = 2U;
-				y++;
-				if (y > 99U)
-				{
-					dir++;
-				}
-				break;
-			case LEFT:
-				/* Move left. Discrease X value. */
-				g_UsbDeviceHidMouse.buffer[2] = (uint8_t)(-2);
-				g_UsbDeviceHidMouse.buffer[3] = 0U;
-				x--;
-				if (x < 2U)
-				{
-					dir++;
-				}
-				break;
-			case UP:
-				/* Move up. Discrease Y value. */
-				g_UsbDeviceHidMouse.buffer[2] = 0U;
-				g_UsbDeviceHidMouse.buffer[3] = (uint8_t)(-2);
-				y--;
-				if (y < 2U)
-				{
-					dir = RIGHT;
-				}
-				break;
-			default:
-				break;
-		}
+		g_UsbDeviceHidMouse.buffer[0] = fsm[currentState].device;
+		g_UsbDeviceHidMouse.buffer[1] = fsm[currentState].data1;
+		g_UsbDeviceHidMouse.buffer[2] = fsm[currentState].data2;
+		g_UsbDeviceHidMouse.buffer[3] = fsm[currentState].data3;
 	}
+
 	else
 	{
 		g_UsbDeviceHidMouse.buffer = s_KeyboardBuffer;
 		length = USB_HID_KEYBOARD_REPORT_LENGTH;
 
-		count++;
-		if(count == 201)
-		{
-			currentId = 1;
-			count = 0;
-		}
-
-	    static int x = 0U;
-	    enum
-	    {
-	        DOWN,
-	        UP
-	    };
-	    static uint8_t dir = DOWN;
-
-	    g_UsbDeviceHidMouse.buffer[0] = 0x02U;
-	    g_UsbDeviceHidMouse.buffer[3] = 0x00U;
-	    switch (dir)
-	    {
-	        case DOWN:
-	            x++;
-	            if (x > 200U)
-	            {
-	                dir++;
-	                g_UsbDeviceHidMouse.buffer[3] = 0x4EU;
-	            }
-	            break;
-	        case UP:
-	            x--;
-	            if (x < 1U)
-	            {
-	                dir = DOWN;
-	                g_UsbDeviceHidMouse.buffer[3] = 0x4BU;
-	            }
-	            break;
-	        default:
-	            break;
-	    }
+		g_UsbDeviceHidMouse.buffer[0] = fsm[currentState].device;
+		g_UsbDeviceHidMouse.buffer[1] = 0;
+		g_UsbDeviceHidMouse.buffer[2] = 0;
+		g_UsbDeviceHidMouse.buffer[3] = 0;
 	}
+
+
 
     /* Send report to the host */
     return USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN,
