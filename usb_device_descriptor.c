@@ -118,7 +118,8 @@ uint8_t g_UsbDeviceDescriptor[] = {
                                                         device's serial number */
     USB_DEVICE_CONFIGURATION_COUNT,                  /* Number of possible configurations */
 };
-
+/*
+ * */
 USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
 uint8_t g_UsbDeviceHidMouseReportDescriptor[] = {
 	0x05U, 0x01U, /* Usage Page (Generic Desktop)*/

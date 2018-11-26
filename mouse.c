@@ -61,8 +61,10 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
+/*STATE SIZE is the number of commands*/
 #define STATE_SIZE 42
 
+/*We define all the commands for the keyboard*/
 #define KEY_A 0x04U
 #define KEY_B 0x05U
 #define KEY_C 0x06U
@@ -101,7 +103,13 @@
 #define ENTER_DELAY 250
 #define WIN_DELAY 200
 #define MOUSE_DELAY 150
-
+#define KEYBOARD_ID 2
+#define MOUSE_ID 1
+/*This is our state machine with device we select between Mouse and Keyboard
+ *if the device is selected as a Keyboard data 1, data2 and data 3 are taking from
+ *Wireshark response, if the device is selected as a mouse data 1 is the right click
+ *data 2 is the x axis and data 3 is the y axis.
+ *time will be the time the command is press */
 typedef struct _fsm
 {
 	uint8_t device;
@@ -111,50 +119,51 @@ typedef struct _fsm
 	uint8_t time;
 }fsm_t;
 
+/*The next part of code is the routine specified in the document*/
 fsm_t fsm[STATE_SIZE] =
 {
-	{2,KEY_START,0,0,KEY_DELAY},
-	{2,0,0,KEY_P,KEY_DELAY},
-	{2,0,0,KEY_I,KEY_DELAY},
-	{2,0,0,KEY_N,KEY_DELAY},
-	{2,0,0,KEY_T,KEY_DELAY},
-	{2,0,0,KEY_A,KEY_DELAY},
-	{2,0,0,KEY_ENTER,ENTER_DELAY},
-	{1,0,0,2,MOUSE_DELAY},
-	{1,1,-2,0,MOUSE_DELAY},
-	{1,1,0,2,MOUSE_DELAY},
-	{1,1,2,0,MOUSE_DELAY},
-	{1,1,0,-2,MOUSE_DELAY},
-	{1,0,0,0,1},
-	{2,8,0,0,MOUSE_DELAY},
-	{2,0,0,KEY_G,KEY_DELAY},
-	{2,0,0,KEY_E,KEY_DELAY},
-	{2,0,0,KEY_D,KEY_DELAY},
-	{2,0,0,KEY_I,KEY_DELAY},
-	{2,0,0,KEY_T,KEY_DELAY},
-	{2,0,0,KEY_ENTER,ENTER_DELAY},
-	{2,KEY_START + KEY_CTRL,0,KEY_LEFTARROW,150},
-	{2,KEY_CTRL,0,KEY_N,ENTER_DELAY},
-	{1,0,-2,0,MOUSE_DELAY},
-	{1,1,0,0,1},
-	{1,0,0,0,1},
-	{2,0,0,KEY_H,KEY_DELAY},
-	{2,0,0,KEY_O,KEY_DELAY},
-	{2,0,0,KEY_L,KEY_DELAY},
-	{2,0,0,KEY_A,KEY_DELAY},
-	{2,0,0,KEY_SPACE,KEY_DELAY},
-	{2,0,0,KEY_M,KEY_DELAY},
-	{2,0,0,KEY_U,KEY_DELAY},
-	{2,0,0,KEY_N,KEY_DELAY},
-	{2,0,0,KEY_D,KEY_DELAY},
-	{2,0,0,KEY_O,KEY_DELAY},
-	{2,KEY_CTRL,0,KEY_A,KEY_DELAY},
-	{2,KEY_CTRL,0,KEY_C,KEY_DELAY},
-	{1,0,2,0,MOUSE_DELAY},
-	{1,1,0,0,1},
-	{1,0,0,0,1},
-	{2,KEY_CTRL,0,KEY_V,KEY_DELAY},
-	{2,0,0,0,KEY_DELAY}
+	{KEYBOARD_ID,KEY_START,0,0,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_P,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_I,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_N,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_T,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_A,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_ENTER,ENTER_DELAY},
+	{MOUSE_ID,0,0,2,MOUSE_DELAY},
+	{MOUSE_ID,1,-2,0,MOUSE_DELAY},
+	{MOUSE_ID,1,0,2,MOUSE_DELAY},
+	{MOUSE_ID,1,2,0,MOUSE_DELAY},
+	{MOUSE_ID,1,0,-2,MOUSE_DELAY},
+	{MOUSE_ID,0,0,0,1},
+	{KEYBOARD_ID,8,0,0,MOUSE_DELAY},
+	{KEYBOARD_ID,0,0,KEY_G,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_E,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_D,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_I,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_T,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_ENTER,ENTER_DELAY},
+	{KEYBOARD_ID,KEY_START + KEY_CTRL,0,KEY_LEFTARROW,150},
+	{KEYBOARD_ID,KEY_CTRL,0,KEY_N,ENTER_DELAY},
+	{MOUSE_ID,0,-2,0,MOUSE_DELAY},
+	{MOUSE_ID,1,0,0,1},
+	{MOUSE_ID,0,0,0,1},
+	{KEYBOARD_ID,0,0,KEY_H,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_O,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_L,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_A,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_SPACE,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_M,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_U,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_N,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_D,KEY_DELAY},
+	{KEYBOARD_ID,0,0,KEY_O,KEY_DELAY},
+	{KEYBOARD_ID,KEY_CTRL,0,KEY_A,KEY_DELAY},
+	{KEYBOARD_ID,KEY_CTRL,0,KEY_C,KEY_DELAY},
+	{MOUSE_ID,0,2,0,MOUSE_DELAY},
+	{MOUSE_ID,1,0,0,1},
+	{MOUSE_ID,0,0,0,1},
+	{KEYBOARD_ID,KEY_CTRL,0,KEY_V,KEY_DELAY},
+	{KEYBOARD_ID,0,0,0,KEY_DELAY}
 };
 /*******************************************************************************
  * Prototypes
@@ -176,6 +185,7 @@ static void USB_DeviceApplicationInit(void);
  ******************************************************************************/
 
 USB_DMA_NONINIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE) static uint8_t s_MouseBuffer[USB_HID_MOUSE_REPORT_LENGTH];
+/*We create a new buffer for the keyboard from the size of the REPORT_LENGHT*/
 static uint8_t s_KeyboardBuffer[USB_HID_KEYBOARD_REPORT_LENGTH];
 usb_hid_mouse_struct_t g_UsbDeviceHidMouse;
 
@@ -256,16 +266,18 @@ void USB_DeviceTaskFn(void *deviceHandle)
 
 static uint8_t count = 0, currentState = 0;
 
-/* Update mouse pointer location. Draw a rectangular rotation*/
+
 static usb_status_t USB_DeviceHidMouseAction(void)
 {
 	uint8_t length;
 
 	count++;
+	/*We going to do this until time is equal to the count*/
 	if(count == fsm[currentState].time)
 	{
 		count = 0;
-
+		/*We change the length depending if we gonna send a command from the mouse
+		 * o keyboard*/
 		if(fsm[currentState].device == 1)
 		{
 			g_UsbDeviceHidMouse.buffer = s_MouseBuffer;
@@ -281,13 +293,14 @@ static usb_status_t USB_DeviceHidMouseAction(void)
 		g_UsbDeviceHidMouse.buffer[1] = fsm[currentState].data1;
 		g_UsbDeviceHidMouse.buffer[2] = fsm[currentState].data2;
 		g_UsbDeviceHidMouse.buffer[3] = fsm[currentState].data3;
-
+		/*We move to next command*/
 		currentState++;
 
 		if(currentState > STATE_SIZE)
 			currentState = STATE_SIZE;
 	}
-
+	/*In case that count is not equal to buffer time we do the action again for the selected
+	 * device*/
 	else if(fsm[currentState].device == 1)
 	{
 		g_UsbDeviceHidMouse.buffer = s_MouseBuffer;
